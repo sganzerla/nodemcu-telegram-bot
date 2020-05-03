@@ -2,19 +2,21 @@
 #include <WiFiClientSecure.h>
 #include <TelegramBot.h>
 
-const char* ssid = "";
-const char* password = "";
-const char BotToken[] = "";
+const char *ssid = " ";
+const char *password = " ";
+const char BotToken[] = " ";
 
 WiFiClientSecure net_ssl;
-TelegramBot bot (BotToken, net_ssl);
+TelegramBot bot(BotToken, net_ssl);
 
-void setup() {
+void setup()
+{
 
   pinMode(LED_BUILTIN, OUTPUT);
   Serial.begin(115200);
   WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED)
+  {
     delay(500);
     Serial.print(".");
   }
@@ -23,26 +25,27 @@ void setup() {
   Serial.println(WiFi.localIP());
 
   bot.begin();
-
+  net_ssl.setInsecure();
 }
 
-void loop() {
+void loop()
+{
 
   if (WiFi.status() == WL_CONNECTED)
-  {
-    message m = bot.getUpdates();
-    delay(500);
-    if ( m.chat_id != 0 ) {
-      if (m.text.equals("ON")) {
-        digitalWrite(LED_BUILTIN, HIGH);
-        bot.sendMessage(m.chat_id, "The Led 1 is now ON");
-
-      } else if (m.text.equals("OFF")) {
-        digitalWrite(LED_BUILTIN, LOW);
-        bot.sendMessage(m.chat_id, "The Led 1 is now OFF");
-
+  { 
+    message m = bot.getUpdates(); 
+    if (m.chat_id != 0)
+    {
+      if (m.text.equals("ON"))
+      {
+        digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+        bot.sendMessage(m.chat_id, "Ligado");
+      }
+      else if (m.text.equals("OFF"))
+      {
+        digitalWrite(LED_BUILTIN, !digitalRead(LED_BUILTIN));
+        bot.sendMessage(m.chat_id, "Desligado");
       }
     }
   }
-  ;
 }
