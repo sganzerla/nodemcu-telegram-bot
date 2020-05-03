@@ -33,3 +33,15 @@ Digitar comando `/newbot`, em seguida digitar o nome do BOT e o nome de um usuá
 O token gerado é o que deve ser usado nas chamadas da biblioteca dentro do NodeMCU. Mantenha-o seguro e não perca ele.
 
 ![image](resources/token-bot.png)
+
+### 2° Instalação de Bibliotecas
+
+#### A) TelegramBot
+
+Adicionar biblioteca `TelegramBot` by `Casa Jasmina`, nesse tutorial a versão instalada é `1.2.5`.
+
+![image](resources/lib-telegrambot.png)
+
+#### B) ArduinoJSON
+
+A biblioteca `TelegramBot` usa uma versão antiga do `ArduinoJson` que não está disponível no gerenciador de bibliotecas, a versão `5.13.5`, você pode baixar ela no [link do desenvolvedor](https://www.ardu-badge.com/ArduinoJson/5.13.5) ou pegar ela [aqui](resources/lib/) e colocar dentro da pasta `libraries` do Arduino IDE.
