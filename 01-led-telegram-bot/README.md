@@ -10,7 +10,13 @@ O hardware necessário para esse exemplo será apenas uma placa NodeMCU, o LED q
 
 ### Vídeo
 
-[![Vídeo](led.png)](https://youtu.be/T6J-mWR9zr8)
+[![Vídeo](resources/led.png)](https://youtu.be/T6J-mWR9zr8)
+
+### Instruções
+
+Para ligar e desligar os leds basta enviar os comandos `ON` e `OFF` por mensagem no Telegram para o usuário Telegram BOT criado.
+
+![image](resources/on-off.png)
 
 ### Requisitos
 
