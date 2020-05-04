@@ -10,12 +10,12 @@
 #include <Servo.h>
 
 // nome da Rede WIFI
-const char *ssid = "";
+const char *ssid = " ";
 // senha da Rede WIFI
-const char *password = "";
+const char *password = " ";
 
 // token BOT Telegram
-const char BotToken[] = "";
+const char BotToken[] = " ";
 
 WiFiClientSecure net_ssl;
 
@@ -78,46 +78,43 @@ void loop()
             // se a mensagem for OPEN
             if (m.text.equals("OPEN"))
             {
-                if (isMove)
-                {
-                    bot.sendMessage(m.chat_id, "Lamento, a tampa já estava em movimento, tente novamente em instantes.");
+                if (checkOpen(m.chat_id))
                     return;
-                }
-                if (angleServo() == ANGLE_SERVO[4])
-                {
-                    bot.sendMessage(m.chat_id, "Tampa já estava aberta.");
-                    return;
-                }
-                abrir();
+
+                openBox();
                 // ... devolve mensagem no chat
                 bot.sendMessage(m.chat_id, "Tudo certo, já abri a tampa.");
             }
             // e se a mensagem for CLOSE ...
             else if (m.text.equals("CLOSE"))
             {
-                if (isMove)
-                {
-                    bot.sendMessage(m.chat_id, "Lamento, a tampa já estava em movimento, tente novamente em instantes.");
+                if (checkClose(m.chat_id))
                     return;
-                }
-                if (angleServo() == ANGLE_SERVO[0])
-                {
-                    bot.sendMessage(m.chat_id, "Tampa já estava fechada.");
-                    return;
-                }
-                fechar();
+
+                closeBox();
                 // ... devolve mensagem no chat
                 bot.sendMessage(m.chat_id, "Pronto, fechei a tampa.");
             }
+            else if (m.text.equals("STATUS"))
+            {
+                bot.sendMessage(m.chat_id, statusBox());
+            }
             else
             {
-                bot.sendMessage(m.chat_id, situacaoTampa());
+                bot.sendMessage(m.chat_id,
+                                "Não reconheci nenhum comando válido na sua mensagem, se deseja saber o status da tampa da caixa envie o texto "
+                                "STATUS"
+                                ", se deseja fechá-la envie "
+                                "CLOSE"
+                                " e se desejar abrí-la envie "
+                                "OPEN"
+                                ".");
             }
         }
     }
 }
 
-void abrir()
+void openBox()
 {
     for (int pos = 0; pos <= 4; pos += 1)
     {
@@ -129,7 +126,7 @@ void abrir()
     isMove = false;
 }
 
-void fechar()
+void closeBox()
 {
 
     for (int pos = 4; pos >= 0; pos -= 1)
@@ -141,7 +138,37 @@ void fechar()
     isMove = false;
 }
 
-char *situacaoTampa()
+bool checkOpen(String chat_id)
+{
+    if (isMove)
+    {
+        bot.sendMessage(chat_id, "Oi, não posso executar seu comando no momento, porque já há uma operação em andamento. Verifique a situação da caixa enviando STATUS daqui a pouco.");
+        return true;
+    }
+    if (angleServo() == ANGLE_SERVO[4])
+    {
+        bot.sendMessage(chat_id, "Olá, ela já estava aberta então eu não precisei fazer nada.");
+        return true;
+    }
+    return false;
+}
+
+bool checkClose(String chat_id)
+{
+    if (isMove)
+    {
+        bot.sendMessage(chat_id, "Oi, não posso executar seu comando no momento, porque já há uma operação em andamento. Verifique a situação da caixa enviando STATUS daqui a pouco.");
+        return true;
+    }
+    if (angleServo() == ANGLE_SERVO[0])
+    {
+        bot.sendMessage(chat_id, "Olá, ela já estava fechada então eu não precisei fazer nada.");
+        return true;
+    }
+    return false;
+}
+
+char *statusBox()
 {
     if (isMove)
         return "Em movimento.";
@@ -150,15 +177,15 @@ char *situacaoTampa()
 
     if (angle == ANGLE_SERVO[0])
     {
-        return "Tampa fechada.";
+        return "A caixa está fechada no momento.";
     }
     else if (angle == ANGLE_SERVO[4])
     {
-        return "Tampa totalmente aberta.";
+        return "A caixa está totalmente aberta no momento.";
     }
     else
     {
-        return "Não tenho certeza, mas provavelmente a tampa está parcialmente aberta.";
+        return "Não tenho certeza, mas provavelmente a caixa está parcialmente aberta.";
     }
 }
 
